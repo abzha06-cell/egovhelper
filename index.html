@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Мемлекеттік қызметтер көмекшісі</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Unbounded:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF4F6; --paper:#FFFFFF; --ink:#132430; --muted:#566B78; --line:#CFDDE3;
+  --accent:#0B7A93; --onaccent:#FFFFFF; --soft:#DDEEF2; --gold:#E3A90B; --user:#0B7A93; --onuser:#FFFFFF;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1A20; --paper:#15252D; --ink:#E1ECF0; --muted:#97ADB8; --line:#284049;
+    --accent:#4FC3DB; --onaccent:#0E1A20; --soft:#1B3540; --gold:#F2C044; --user:#2E7F93; --onuser:#FFFFFF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1A20; --paper:#15252D; --ink:#E1ECF0; --muted:#97ADB8; --line:#284049;
+  --accent:#4FC3DB; --onaccent:#0E1A20; --soft:#1B3540; --gold:#F2C044; --user:#2E7F93; --onuser:#FFFFFF;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:780px;margin:0 auto;padding:32px 18px 140px}
+header{margin-bottom:22px}
+.mark{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin-bottom:12px}
+.mark::before{content:"";width:18px;height:18px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px var(--soft)}
+h1{font-family:"Unbounded","Golos Text",system-ui,sans-serif;font-weight:600;font-size:clamp(26px,5vw,40px);line-height:1.1;letter-spacing:-0.02em;margin:0 0 12px}
+.lede{font-size:17px;margin:0;max-width:60ch;color:var(--muted)}
+h2{font-size:16px;margin:26px 0 10px}
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.topics button{font:inherit;text-align:left;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;line-height:1.35}
+.topics button:hover{border-color:var(--accent)}
+.topics small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#chat{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+.msg{max-width:100%}
+.msg.user{align-self:flex-end;background:var(--user);color:var(--onuser);border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:85%;white-space:pre-wrap}
+.msg.bot{background:var(--paper);border:1px solid var(--line);border-radius:16px 16px 16px 4px;padding:14px 18px}
+.msg.bot h3{font-size:15px;margin:14px 0 4px;color:var(--accent)}
+.msg.bot h3:first-child{margin-top:0}
+.msg.bot p{margin:0 0 8px}
+.msg.bot ul,.msg.bot ol{margin:0 0 8px;padding-left:22px}
+.msg.bot li{margin:2px 0}
+.thinking{color:var(--muted);font-style:italic}
+.err{color:var(--muted);border-left:3px solid var(--gold);padding-left:10px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);
+  padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px))}
+.bar .in{max-width:780px;margin:0 auto;display:flex;gap:8px;align-items:flex-end}
+textarea{flex:1;font:inherit;resize:none;min-height:46px;max-height:140px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.send{font:inherit;font-weight:600;border:0;border-radius:12px;padding:0 18px;height:46px;background:var(--accent);color:var(--onaccent);cursor:pointer}
+.send[disabled]{opacity:.5;cursor:default}
+.ghost{font:inherit;font-size:14px;border:1px solid var(--line);border-radius:12px;padding:0 12px;height:46px;background:var(--paper);color:var(--ink);cursor:pointer}
+.foot{max-width:780px;margin:6px auto 0;font-size:12px;color:var(--muted)}
+.notice{background:var(--soft);border-radius:12px;padding:12px 14px;margin-top:16px;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mark">ЖИ көмекшісі</div>
+    <h1>Мемлекеттік қызметтер көмекшісі</h1>
+    <p class="lede">Құжат рәсімдеу, анықтама алу немесе кезекке тұру туралы сұрақ қойыңыз. Қайда бару керегін, қандай құжат қажет екенін және не істеу керегін қадамдап түсіндіріп беремін.</p>
+  </header>
+
+  <section id="topicsBox" aria-labelledby="pt">
+    <h2 id="pt">Жиі қойылатын сұрақтар</h2>
+    <div class="topics" id="topics"></div>
+  </section>
+
+  <div id="notice" class="notice" hidden></div>
+  <div id="chat" aria-live="polite"></div>
+</div>
+
+<div class="bar">
+  <div class="in">
+    <button class="ghost" id="reset" type="button" hidden>Жаңа сұрақ</button>
+    <textarea id="q" rows="1" placeholder="Мысалы: ЭЦҚ-ны қалай аламын?" aria-label="Сұрағыңыз"></textarea>
+    <button class="send" id="send" type="button">Сұрау</button>
+  </div>
+  <p class="foot">ЖИ қателесуі мүмкін. Ресми ақпаратты egov.kz сайтынан немесе 1414 нөмірінен нақтылаңыз. ЖСН, құпиясөз және SMS кодты ешқашан жазбаңыз.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+const TOPICS=[
+  {t:"Жеке куәлікті ауыстыру",s:"Мерзімі өтсе немесе жоғалса",q:"Жеке куәлікті қалай ауыстырамын?"},
+  {t:"Тұрғылықты жерге тіркелу",s:"Пәтер ауыстырғанда",q:"Жаңа пәтерге тұрақты тіркелуді қалай жасаймын?"},
+  {t:"Балабақшаға кезек",s:"Балаға орын алу",q:"Баланы балабақшаға кезекке қалай қоямын?"},
+  {t:"ЭЦҚ алу",s:"eGov-қа кіру кілті",q:"ЭЦҚ-ны қалай аламын және ол не үшін керек?"},
+  {t:"Соттылықтың жоқтығы туралы анықтама",s:"Жұмысқа орналасқанда",q:"Соттылығы жоқ екені туралы анықтаманы қалай аламын?"},
+  {t:"Бала туғанда жәрдемақы",s:"Отбасыларға",q:"Бала туғанда берілетін жәрдемақыны қалай рәсімдеймін?"},
+  {t:"Жүргізуші куәлігін ауыстыру",s:"Мерзімі біткенде",q:"Жүргізуші куәлігін қалай ауыстырамын?"},
+  {t:"Мекенжай анықтамасы",s:"Тіркелген жерді растау",q:"Мекенжай анықтамасын қалай аламын?"}
+];
+
+
+
+const $=id=>document.getElementById(id);
+const chat=$("chat"),q=$("q"),send=$("send"),reset=$("reset"),notice=$("notice");
+let turns=[],busy=false,ctl=null;
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function md(src){
+  const inline=s=>s.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+  let out="",list=null;
+  const close=()=>{if(list){out+=`</${list}>`;list=null;}};
+  for(const raw of esc(src).split("\n")){
+    const l=raw.trim();let m;
+    if(!l){close();continue;}
+    if((m=l.match(/^#{1,4}\s+(.*)/))){close();out+=`<h3>${inline(m[1])}</h3>`;continue;}
+    if((m=l.match(/^[-*•]\s+(.*)/))){if(list!=="ul"){close();out+="<ul>";list="ul";}out+=`<li>${inline(m[1])}</li>`;continue;}
+    if((m=l.match(/^\d+[.)]\s+(.*)/))){if(list!=="ol"){close();out+="<ol>";list="ol";}out+=`<li>${inline(m[1])}</li>`;continue;}
+    close();out+=`<p>${inline(l)}</p>`;
+  }
+  close();return out;
+}
+function bubble(cls,html){const d=document.createElement("div");d.className="msg "+cls;d.innerHTML=html;chat.appendChild(d);return d;}
+function scrollEnd(){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});}
+function errText(code){
+  switch(code){
+    case "rate_limited":case "queue_overflow":return"Сұрақтар тым жиі жіберілді. Бір минуттан кейін қайталап көріңіз.";
+    case "refused":return"ЖИ бұл сұраққа жауап бере алмайды. Сұрақты басқаша қойып көріңіз.";
+    case "prompt_too_large":return"Әңгіме тым ұзарып кетті. «Жаңа сұрақ» батырмасын басыңыз.";
+    case "no_key":return"Сервер бапталмаған: GEMINI_API_KEY көрсетілмеген.";
+    default:return"Жауап алу мүмкін болмады. Сәлден кейін қайталап көріңіз.";
+  }
+}
+function setBusy(b){
+  busy=b;q.disabled=b&&false;
+  send.textContent=b?"Тоқтату":"Сұрау";
+}
+
+async function ask(text){
+  text=text.trim();
+  if(!text)return;
+  if(busy)return;
+  $("topicsBox").hidden=true;reset.hidden=false;
+  bubble("user",esc(text));
+  turns.push({role:"user",content:text});
+  turns=turns.slice(-8);
+  const b=bubble("bot",'<p class="thinking">Ойланып жатырмын…</p>');
+  scrollEnd();
+  q.value="";autosize();
+  setBusy(true);
+  ctl=new AbortController();
+  const myCtl=ctl;let timedOut=false;
+  const t0=Date.now();
+  const tick=setInterval(()=>{const el=b.querySelector(".thinking");if(el)el.textContent=`Ойланып жатырмын… ${Math.round((Date.now()-t0)/1000)} сек`;},1000);
+  const killer=setTimeout(()=>{timedOut=true;myCtl.abort();},60000);
+  try{
+    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({turns}),signal:ctl.signal});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok||!data.text)throw {code:data.code||"upstream_error"};
+    const ans=data.text;
+    b.innerHTML=md(ans);
+    turns.push({role:"assistant",content:ans});
+  }catch(e){
+    turns.pop();
+    if(e&&e.name==="AbortError"){b.innerHTML=timedOut?'<p class="err">Жауап тым ұзақ болды. Сұрақты қайта жіберіп көріңіз.</p>':'<p class="err">Тоқтатылды.</p>';}
+    else{b.innerHTML=`<p class="err">${errText(e&&e.code)}</p>`;}
+  }finally{
+    clearInterval(tick);clearTimeout(killer);
+    setBusy(false);ctl=null;
+  }
+}
+
+// тақырыптар
+const tb=$("topics");
+TOPICS.forEach(t=>{const btn=document.createElement("button");btn.type="button";
+  btn.innerHTML=`${esc(t.t)}<small>${esc(t.s)}</small>`;
+  btn.addEventListener("click",()=>ask(t.q));tb.appendChild(btn);});
+
+function autosize(){q.style.height="auto";q.style.height=Math.min(q.scrollHeight,140)+"px";}
+q.addEventListener("input",autosize);
+q.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();ask(q.value);}});
+send.addEventListener("click",()=>{if(busy){ctl&&ctl.abort();}else ask(q.value);});
+reset.addEventListener("click",()=>{if(busy&&ctl)ctl.abort();turns=[];chat.innerHTML="";$("topicsBox").hidden=false;reset.hidden=true;q.focus();window.scrollTo({top:0,behavior:"smooth"});});
+
+
+})();
+</script>
+</body>
+</html>
